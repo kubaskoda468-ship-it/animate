@@ -1,0 +1,22 @@
+{
+  "name": "bike-history",
+  "title": "A short history of the bicycle",
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 24,
+    "bpm": 120,
+    "duration": 20.0,
+    "frames": 480
+  },
+  "storyFormat": "F2 morph chain (wheels become wheels; one hard cut on the payoff)",
+  "style": "cut-paper",
+  "review": {
+    "safe": {
+      "top": 240,
+      "bottom": 420,
+      "right": 140
+    },
+    "refs": {}
+  }
+}

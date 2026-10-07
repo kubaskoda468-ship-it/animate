@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A short history of the bicycle</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #1b1714; overflow: hidden; }
+  body { display: flex; align-items: center; justify-content: center; }
+  canvas { height: min(100vh, calc(100vw * 16 / 9)); width: auto; aspect-ratio: 9 / 16; display: block; cursor: pointer; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+"use strict";
+// =====================================================================
+//  A SHORT HISTORY OF THE BICYCLE — 9:16, 20.0s @ 120 BPM, 24fps. Cut paper, F2 morph chain.
+//  Device: each era closes in on its front wheel, which becomes the next era's wheel; the spark gains a ray per era.
+//  1817 running machine -> 1860s boneshaker -> 1870s penny-farthing (a header: silence) -> SLAM 1885 safety bicycle
+//  -> 1888 air tyres -> today: the same road, a child on a balance bike — no pedals again.
+//  Colour: orange = the spark (the rider) and only it.
+// =====================================================================
+const FPS = 24, W = 1080, H = 1920;
+const BPM = 120, BEAT = 60 / BPM, E8 = BEAT / 2, E16 = BEAT / 4;
+const DURATION = 20.0;
+const NFRAMES = Math.round(DURATION * FPS);   // 480
+const LOOP_T = NFRAMES / FPS;
+const SAFE = { top: 240, bottom: 420, right: 140 };
+const HAND = '"Ink Free", "Segoe Print", "Bradley Hand", "Chalkboard SE", "Comic Sans MS", "Comic Neue", cursive';
+const CX = 470;
+
+const ERA_LIST = [
+  [0.0, 3.5, () => sDrais()],
+  [3.5, 7.0, () => sBoneshaker()],
+  [7.0, 11.5, () => sPenny()],
+  [11.5, 16.5, () => sRover()],
+  [16.5, 20.0, () => sToday()],
+];
+const SHOTS = [
+  //  key        era  t0     t1     title
+  ['drais',      0,   0.0,   3.5,  '1817: the spark runs along on a wooden machine; the coach falls behind'],
+  ['boneshaker', 1,   3.5,   7.0,  '1860s: pedals on the front wheel; cobbles rattle everything'],
+  ['penny',      2,   7.0,  10.5,  '1870s: the high wheel, fast and proud; a stone'],
+  ['header',     2,  10.5,  11.5,  'a header: frozen in mid-air (silence)'],
+  ['rover',      3,  11.5,  14.5,  '1885: SLAM — the safety bicycle catches the spark'],
+  ['tyre',       3,  14.5,  16.5,  '1888: air in the tyres'],
+  ['today',      4,  16.5,  20.0,  'today: the same road; a child on a balance bike, no pedals'],
+];
+const TIMELINE = {
+  width: W, height: H, fps: FPS, bpm: BPM, duration: DURATION, frames: NFRAMES, loop: LOOP_T, safe: SAFE,
+  format: 'morph-chain',
+  shots: SHOTS.map(([key, era, t0, t1, title], i) => ({ id: i + 1, key, era, t0, t1, title })),
+  cuts: [11.5],
+  morphs: [3.5, 7.0, 16.5],
+  cues: { coach: 1.0, kick: [0.5, 1.0, 1.5, 2.0, 2.5], stone: 9.5, hit: 10.25, freeze: 10.5, slam: 11.5, pump: 14.75, kid: 17.25 },
+  acts: [
+    { name: '1 Running',   role: 'build',      t0: 0.0,  t1: 7.0 },
+    { name: '2 High',      role: 'peak',       t0: 7.0,  t1: 10.5 },
+    { name: '3 Header',    role: 'silence',    t0: 10.5, t1: 11.5 },
+    { name: '4 Safety',    role: 'gift',       t0: 11.5, t1: 16.5 },
+    { name: '5 Today',     role: 'goodbye',    t0: 16.5, t1: 20.0 },
+  ],
+  board: [
+    { t: 2.25, title: '1817: no pedals, just run', sound: 'soft pad; wooden footsteps', next: 'the wooden wheel becomes an iron one' },
+    { t: 5.75, title: '1860s: the boneshaker', sound: 'rattle on 8ths; groove starts', next: 'the front wheel grows huge' },
+    { t: 9.0,  title: '1870s: the high wheel', sound: 'the busiest groove', next: 'a stone...' },
+    { t: 10.75, title: 'a header!', sound: 'silence', next: 'SLAM: hard cut' },
+    { t: 12.75, title: '1885: the safety bicycle', sound: 'the loudest hit: stab + sub', next: 'pump' },
+    { t: 15.75, title: '1888: air tyres', sound: 'pump hisses; warm chord', next: 'the tyre becomes today\'s wheel' },
+    { t: 18.5, title: 'today: still no pedals', sound: 'the opening notes, fading', next: 'loops to 1817' },
+  ],
+  narration: [],
+};
+window.TIMELINE = TIMELINE;
